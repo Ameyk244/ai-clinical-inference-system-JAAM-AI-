@@ -4731,6 +4731,8 @@ def results_file(filename):
 # ----------------------------
 # Main
 # ----------------------------
-if __name__=="__main__":
-    print("Running locally: http://127.0.0.1:5021")
-    app.run(port=5021, debug=True)
+if __name__ == "__main__":
+    print("Running Flask app on port 5021")
+    app.run(host="0.0.0.0", port=8080, debug=True)
+
+

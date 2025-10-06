@@ -1,4 +1,6 @@
-tensorflow
+tensorflow==2.19.0
+h5py>=3.11.0
+grpcio==1.57.0
 matplotlib
 huggingface-hub
 flask

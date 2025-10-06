@@ -1,0 +1,21 @@
+# Ignore git & local dev files
+.git
+.gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.tmp
+*.log
+
+# Virtual envs
+env/
+venv/
+
+# Configs
+.env
+.DS_Store
+
+# Build caches
+*.egg-info/
