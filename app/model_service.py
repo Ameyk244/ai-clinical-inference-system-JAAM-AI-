@@ -31,11 +31,19 @@ CONFIDENCE_THRESHOLD = 0.7
 # Load Models (SAFE + LAZY)
 # ----------------------------
 from tensorflow.keras.models import load_model
-
+from tensorflow.keras.layers import InputLayer
 MODELS = None
 
 def safe_load_model(path):
-    return load_model(path, compile=False)  # avoids batch_shape error
+    try:
+        return load_model(
+            path,
+            compile=False,
+            custom_objects={"InputLayer": InputLayer}
+        )
+    except Exception as e:
+        print("⚠️ Fallback loading:", str(e))
+        return load_model(path, compile=False, safe_mode=False)
 
 def load_models():
     model_files = {
