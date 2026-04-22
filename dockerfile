@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 
@@ -12,17 +12,17 @@ RUN apt-get update && apt-get install -y \
 # Upgrade pip
 RUN pip install --upgrade pip
 
-# Copy requirements first for caching
+# Copy requirements first (better caching)
 COPY requirements.txt /app/
 
-# Install Python dependencies
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app code
+# Copy full code
 COPY . /app
 
-# Expose Flask port
+# Expose port
 EXPOSE 8080
 
-# Run app
-CMD ["python", "app.py"]
+# Use production server
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080"]
