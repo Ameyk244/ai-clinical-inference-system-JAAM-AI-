@@ -25,4 +25,4 @@ COPY . /app
 EXPOSE 8080
 
 # Use production server
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080"]
+CMD ["gunicorn", "main:app", "--bind", "0.0.0.0:8080"]
