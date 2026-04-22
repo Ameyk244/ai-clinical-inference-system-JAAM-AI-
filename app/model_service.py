@@ -28,8 +28,15 @@ CLASS_LABELS = ['MildDemented', 'ModerateDemented', 'NonDemented', 'VeryMildDeme
 CONFIDENCE_THRESHOLD = 0.7
 
 # ----------------------------
-# Load Models
+# Load Models (SAFE + LAZY)
 # ----------------------------
+from tensorflow.keras.models import load_model
+
+MODELS = None
+
+def safe_load_model(path):
+    return load_model(path, compile=False)  # avoids batch_shape error
+
 def load_models():
     model_files = {
         "vgg19": "vgg19.h5",
@@ -39,12 +46,15 @@ def load_models():
     models = {}
     for name, fname in model_files.items():
         path = hf_hub_download(MODEL_REPO, fname, token=HF_TOKEN)
-        models[name] = load_model(path)
+        models[name] = safe_load_model(path)
         print(f"✅ Loaded {name} from {fname}")
     return models
 
-MODELS = load_models()
-
+def get_models():
+    global MODELS
+    if MODELS is None:
+        MODELS = load_models()
+    return MODELS
 # ----------------------------
 # Preprocessing
 # ----------------------------
@@ -57,13 +67,15 @@ def preprocess(img_path):
 # ----------------------------
 # Single prediction
 # ----------------------------
-def predict_single(img_array, model_name):
-    model = MODELS[model_name]
+def predict_single(img_array, model):
     preds = model.predict(img_array)
+
     idx = int(np.argmax(preds))
     conf = float(np.max(preds))
+
     label = CLASS_LABELS[idx] if conf >= CONFIDENCE_THRESHOLD else "Unknown / Invalid MRI"
-    return label, conf*100, idx
+
+    return label, conf * 100, idx
 
 # ----------------------------
 # Grad-CAM (for VGG19)
@@ -120,13 +132,19 @@ def save_gradcam(img_path, class_index=None):
 # ----------------------------
 def predict_ensemble(img_path):
     _, arr = preprocess(img_path)
-    results = [predict_single(arr, m) for m in MODELS]
+
+    models = get_models()  # ✅ load models properly
+
+    results = [predict_single(arr, m) for m in models.values()]  # ✅ fix here
+
     labels, confs, idxs = zip(*results)
 
-    valid = [l for l in labels if l!="Unknown / Invalid MRI"]
-    if len(valid)!=len(MODELS) or len(set(valid))!=1:
-        return "Unknown / Invalid MRI",0.0,None
+    valid = [l for l in labels if l != "Unknown / Invalid MRI"]
+
+    if len(valid) != len(models) or len(set(valid)) != 1:
+        return "Unknown / Invalid MRI", 0.0, None
+
     class_index = idxs[0]
     gradcam_path = save_gradcam(img_path, class_index)
-    return valid[0], np.mean([c for l,c in zip(labels,confs) if l==valid[0]]), gradcam_path
 
+    return valid[0], np.mean([c for l, c in zip(labels, confs) if l == valid[0]]), gradcam_path
