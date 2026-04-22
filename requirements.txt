@@ -1,4 +1,4 @@
-tensorflow==2.19.0
+tensorflow-cpu==2.13.0
 h5py>=3.11.0
 grpcio==1.57.0
 matplotlib
@@ -9,3 +9,5 @@ pillow
 opencv-python
 python-dotenv
 gunicorn
+pytest
+requests
