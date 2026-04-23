@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 URL = "http://127.0.0.1:8080/api/predict"
 
-@patch("app.model_service.predict_ensemble")
+@patch("main.predict_ensemble") 
 def test_valid_image_ci(mock_predict):
     mock_predict.return_value = ("TestLabel", 95.0, None)
 
