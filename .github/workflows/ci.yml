@@ -23,10 +23,5 @@ jobs:
         pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Start server
-      run: |
-        python main.py &
-        sleep 10
-
     - name: Run tests
       run: pytest tests/test_api_ci.py
