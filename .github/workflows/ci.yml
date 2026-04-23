@@ -23,8 +23,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install --upgrade pip
-        pip install -r requirements.txt
+           pip install --upgrade pip
+           pip install --no-cache-dir -r requirements.txt
+      env:
+        TF_ENABLE_ONEDNN_OPTS: 0
 
     - name: Run tests
       run: pytest tests/test_api_ci.py
