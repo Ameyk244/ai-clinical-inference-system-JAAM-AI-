@@ -29,6 +29,21 @@ jobs:
     - name: Run tests
       run: pytest tests/test_api_ci.py
 
+    - name: Run inference script
+      run: python scripts/run_inference.py 
+
+    - name: Upload inference results
+      uses: actions/upload-artifact@v4
+      with:
+         name: inference-results
+         path: ci_results/
+
+    - name: Upload GradCAM results
+      uses: actions/upload-artifact@v4
+      with:
+        name: gradcam-results
+        path: results/   
+
     # 🔥 OPTIONAL (but highly recommended)
     - name: Build Docker image
       run: docker build -t ai-clinical-app .

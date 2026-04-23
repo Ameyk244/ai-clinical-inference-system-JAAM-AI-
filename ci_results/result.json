@@ -1,0 +1,5 @@
+{
+    "label": "ModerateDemented",
+    "confidence": 91.20181401570638,
+    "gradcam": "results\\gradcam_test.jpg"
+}
