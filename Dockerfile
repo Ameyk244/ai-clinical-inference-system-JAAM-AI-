@@ -29,4 +29,4 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Start app using Gunicorn (dynamic port support)
-CMD ["sh", "-c", "gunicorn main:app --bind 0.0.0.0:$PORT"]
+CMD ["sh", "-c", "gunicorn main_render:app --bind 0.0.0.0:$PORT --timeout 180"]
