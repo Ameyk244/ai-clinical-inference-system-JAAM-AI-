@@ -1,8 +1,9 @@
 FROM python:3.10-slim
 
+# Set working directory
 WORKDIR /app
 
-# System dependencies
+# System dependencies (needed for OpenCV / TensorFlow)
 RUN apt-get update && apt-get install -y \
     build-essential \
     libgl1 \
@@ -12,17 +13,20 @@ RUN apt-get update && apt-get install -y \
 # Upgrade pip
 RUN pip install --upgrade pip
 
-# Copy requirements first (better caching)
-COPY requirements.txt /app/
+# Copy requirements (for better caching)
+COPY requirements.txt .
 
-# Install dependencies
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy full code
-COPY . /app
+# Copy full project
+COPY . .
+
+# Set default port (Render overrides this)
+ENV PORT=8080
 
 # Expose port
 EXPOSE 8080
 
-# Use production server
-CMD ["gunicorn", "main:app", "--bind", "0.0.0.0:8080"]
+# Start app using Gunicorn (dynamic port support)
+CMD ["sh", "-c", "gunicorn main:app --bind 0.0.0.0:$PORT"]
