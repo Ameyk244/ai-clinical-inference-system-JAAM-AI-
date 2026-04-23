@@ -23,6 +23,10 @@ jobs:
         pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run tests
+    - name: Start server
       run: |
-        pytest
+        python main.py &
+        sleep 10
+
+    - name: Run tests
+      run: pytest
